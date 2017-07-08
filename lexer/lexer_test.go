@@ -1,9 +1,19 @@
 package lexer
 
 import (
+	"github.com/cprieto/monkey/token"
 	"testing"
-	"token"
 )
+
+func TestLexerCanRecognizeEOF(t *testing.T) {
+	const input = ""
+
+	l := NewLexer(input)
+	tok := l.NextToken()
+	if tok.TokenType != token.EOF {
+		t.Fatalf("Expected EOF but got %q", tok.TokenType)
+	}
+}
 
 func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
 	const input = ";(,}-{=)+"

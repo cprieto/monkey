@@ -12,6 +12,7 @@ const (
 	ASSIGN    = "="
 	PLUS      = "+"
 	LESS      = "-"
+	EOF       = "EOF"
 )
 
 type Token struct {
