@@ -9,11 +9,13 @@ type Lexer struct {
 }
 
 func NewLexer(input string) *Lexer {
-	return &Lexer{}
+	return &Lexer{input: input}
 }
 
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
+
+	l.readChar()
 	switch l.char {
 	case 0:
 		tok = token.Token{TokenType: token.EOF}

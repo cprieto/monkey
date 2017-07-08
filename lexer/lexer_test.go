@@ -30,6 +30,7 @@ func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
 		{"=", token.ASSIGN},
 		{")", token.RPAREN},
 		{"+", token.PLUS},
+		{"", token.EOF},
 	}
 
 	l := NewLexer(input)
@@ -38,6 +39,7 @@ func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
 		if tok.Literal != tt.Literal {
 			t.Fatalf("Expected literal %q but got %q", tt.Literal, tok.Literal)
 		}
+
 		if tok.TokenType != tt.TokenType {
 			t.Fatalf("Expected type %q but got %q", tt.TokenType, tok.TokenType)
 		}
