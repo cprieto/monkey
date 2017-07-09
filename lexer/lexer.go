@@ -3,9 +3,10 @@ package lexer
 import "github.com/cprieto/monkey/token"
 
 type Lexer struct {
-	input    string
-	char     byte
-	position int
+	input      string
+	char       byte
+	currentPos int
+	nextPos    int
 }
 
 func NewLexer(input string) *Lexer {
@@ -40,19 +41,25 @@ func (l *Lexer) NextToken() token.Token {
 	case '=':
 		tok = token.Token{string(l.char), token.ASSIGN}
 	default:
-		tok.TokenType = token.ILLEGAL
+		if isLetter(l.char) {
+			tok.Literal = l.getIdent()
+			tok.TokenType = token.IDENT
+		} else {
+			tok.TokenType = token.ILLEGAL
+		}
 	}
 
 	return tok
 }
 
 func (l *Lexer) readChar() {
-	if l.position >= len(l.input) {
+	if l.nextPos >= len(l.input) {
 		l.char = 0
 	} else {
-		l.char = l.input[l.position]
+		l.char = l.input[l.nextPos]
 	}
-	l.position += 1
+	l.currentPos = l.nextPos
+	l.nextPos += 1
 }
 
 func (l *Lexer) skipWhitespace() {
@@ -61,6 +68,18 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
+func (l *Lexer) getIdent() string {
+	position := l.currentPos
+	for isLetter(l.char) {
+		l.readChar()
+	}
+	return l.input[position:l.currentPos]
+}
+
 func isWhitespace(char byte) bool {
 	return char == ' ' || char == '\t' || char == '\n' || char == '\r'
+}
+
+func isLetter(char byte) bool {
+	return char >= 'a' && char <= 'z' || char >= 'A' && char <= 'Z' || char == '_'
 }

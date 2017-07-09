@@ -83,3 +83,28 @@ func TestIllegalCharacters(t *testing.T) {
 		t.Fatalf("Expected EOF token but got %v", tok.TokenType)
 	}
 }
+
+func TestLexerRecognizeIdentifierToken(t *testing.T) {
+	const input = "foo bar _hello"
+	expect := []struct {
+		TokenType token.TokenType
+		Literal   string
+	}{
+		{token.IDENT, "foo"},
+		{token.IDENT, "bar"},
+		{token.IDENT, "_hello"},
+		{token.EOF, ""},
+	}
+
+	l := NewLexer(input)
+	for _, r := range expect {
+		tok := l.NextToken()
+		if r.TokenType != tok.TokenType {
+			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		}
+
+		if r.Literal != tok.Literal {
+			t.Fatalf("Expected literal %v but got %v", r.Literal, tok.Literal)
+		}
+	}
+}

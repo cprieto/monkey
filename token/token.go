@@ -14,6 +14,7 @@ const (
 	LESS      = "-"
 	EOF       = "EOF"
 	ILLEGAL   = "ILLEGAL"
+	IDENT     = "IDENT"
 )
 
 type Token struct {
