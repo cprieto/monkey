@@ -39,6 +39,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.Token{string(l.char), token.LESS}
 	case '=':
 		tok = token.Token{string(l.char), token.ASSIGN}
+	default:
+		tok.TokenType = token.ILLEGAL
 	}
 
 	return tok

@@ -66,3 +66,20 @@ func TestLexerIgnoresWhitespacesAndEnter(t *testing.T) {
 		}
 	}
 }
+
+func TestIllegalCharacters(t *testing.T) {
+	const input = "~!@"
+	l := NewLexer(input)
+
+	for i := 0; i < len(input); i++ {
+		tok := l.NextToken()
+		if tok.TokenType != token.ILLEGAL {
+			t.Fatalf("Expected an ILLEGAL token, but got %v", tok.TokenType)
+		}
+	}
+
+	tok := l.NextToken()
+	if tok.TokenType != token.EOF {
+		t.Fatalf("Expected EOF token but got %v", tok.TokenType)
+	}
+}

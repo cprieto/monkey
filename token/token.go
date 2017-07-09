@@ -13,6 +13,7 @@ const (
 	PLUS      = "+"
 	LESS      = "-"
 	EOF       = "EOF"
+	ILLEGAL   = "ILLEGAL"
 )
 
 type Token struct {
