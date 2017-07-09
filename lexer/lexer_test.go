@@ -108,3 +108,39 @@ func TestLexerRecognizeIdentifierToken(t *testing.T) {
 		}
 	}
 }
+
+func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
+	const input = "let add = fn(x, y){ x + y};"
+	tokens := []struct {
+		Literal   string
+		TokenType token.TokenType
+	}{
+		{"let", token.LET},
+		{"add", token.IDENT},
+		{"=", token.ASSIGN},
+		{"fn", token.FUNCTION},
+		{"(", token.LPAREN},
+		{"x", token.IDENT},
+		{",", token.COMMA},
+		{"y", token.IDENT},
+		{")", token.RPAREN},
+		{"{", token.LBRACE},
+		{"x", token.IDENT},
+		{"+", token.PLUS},
+		{"y", token.IDENT},
+		{"}", token.RBRACE},
+		{";", token.COMMA},
+		{"", token.EOF},
+	}
+
+	l := NewLexer(input)
+	for _, r := range tokens {
+		tok := l.NextToken()
+		if r.Literal != tok.Literal {
+			t.Errorf("Expected literal %v but got %v", r.Literal, tok.Literal)
+		}
+		if r.TokenType != tok.TokenType {
+			t.Errorf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		}
+	}
+}
