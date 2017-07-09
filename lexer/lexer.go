@@ -16,6 +16,8 @@ func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
 	l.readChar()
+	l.skipWhitespace()
+
 	switch l.char {
 	case 0:
 		tok = token.Token{TokenType: token.EOF}
@@ -49,4 +51,14 @@ func (l *Lexer) readChar() {
 		l.char = l.input[l.position]
 	}
 	l.position += 1
+}
+
+func (l *Lexer) skipWhitespace() {
+	for isWhitespace(l.char) {
+		l.readChar()
+	}
+}
+
+func isWhitespace(char byte) bool {
+	return char == ' ' || char == '\t' || char == '\n' || char == '\r'
 }

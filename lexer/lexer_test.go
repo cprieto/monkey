@@ -45,3 +45,24 @@ func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
 		}
 	}
 }
+
+func TestLexerIgnoresWhitespacesAndEnter(t *testing.T) {
+	const input = `+ =
+	{
+	`
+	expect := []token.TokenType{
+		token.PLUS,
+		token.ASSIGN,
+		token.LBRACE,
+		token.EOF,
+	}
+
+	l := NewLexer(input)
+	for _, e := range expect {
+		tok := l.NextToken()
+
+		if tok.TokenType != e {
+			t.Fatalf("Expected type %v but got %v", e, tok.TokenType)
+		}
+	}
+}
