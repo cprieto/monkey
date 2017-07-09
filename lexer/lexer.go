@@ -20,7 +20,23 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok = token.Token{TokenType: token.EOF}
 	case ';':
-		tok = token.Token{Literal: string(l.char), TokenType: token.SEMICOLON}
+		tok = token.Token{string(l.char), token.SEMICOLON}
+	case ',':
+		tok = token.Token{string(l.char), token.COMMA}
+	case '(':
+		tok = token.Token{string(l.char), token.LPAREN}
+	case ')':
+		tok = token.Token{string(l.char), token.RPAREN}
+	case '{':
+		tok = token.Token{string(l.char), token.LBRACE}
+	case '}':
+		tok = token.Token{string(l.char), token.RBRACE}
+	case '+':
+		tok = token.Token{string(l.char), token.PLUS}
+	case '-':
+		tok = token.Token{string(l.char), token.LESS}
+	case '=':
+		tok = token.Token{string(l.char), token.ASSIGN}
 	}
 
 	return tok

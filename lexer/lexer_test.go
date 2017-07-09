@@ -26,7 +26,7 @@ func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
 		{",", token.COMMA},
 		{"}", token.RBRACE},
 		{"-", token.LESS},
-		{"}", token.LBRACE},
+		{"{", token.LBRACE},
 		{"=", token.ASSIGN},
 		{")", token.RPAREN},
 		{"+", token.PLUS},
@@ -41,7 +41,7 @@ func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
 		}
 
 		if tok.TokenType != tt.TokenType {
-			t.Fatalf("Expected type %q but got %q", tt.TokenType, tok.TokenType)
+			t.Fatalf("Expected type %v but got %v", tt.TokenType, tok.TokenType)
 		}
 	}
 }
