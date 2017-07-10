@@ -15,6 +15,8 @@ const (
 	EOF       = "EOF"
 	ILLEGAL   = "ILLEGAL"
 	IDENT     = "IDENT"
+	LET       = "LET"
+	FUNC      = "FUNCTION"
 )
 
 type Token struct {

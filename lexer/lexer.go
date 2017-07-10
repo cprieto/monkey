@@ -2,6 +2,11 @@ package lexer
 
 import "github.com/cprieto/monkey/token"
 
+var keywords = map[string]token.TokenType{
+	"let": token.LET,
+	"fn":  token.FUNC,
+}
+
 type Lexer struct {
 	input      string
 	char       byte
@@ -43,7 +48,7 @@ func (l *Lexer) NextToken() token.Token {
 	default:
 		if isLetter(l.char) {
 			tok.Literal = l.getIdent()
-			tok.TokenType = token.IDENT
+			tok.TokenType = lookupIdent(tok.Literal)
 		} else {
 			tok.TokenType = token.ILLEGAL
 		}
@@ -82,4 +87,11 @@ func isWhitespace(char byte) bool {
 
 func isLetter(char byte) bool {
 	return char >= 'a' && char <= 'z' || char >= 'A' && char <= 'Z' || char == '_'
+}
+
+func lookupIdent(input string) token.TokenType {
+	if val, ok := keywords[input]; ok {
+		return val
+	}
+	return token.IDENT
 }

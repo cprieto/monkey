@@ -109,6 +109,56 @@ func TestLexerRecognizeIdentifierToken(t *testing.T) {
 	}
 }
 
+func TestLexerReturnsFunctionAndIdent(t *testing.T) {
+	const input = "let fn"
+	expect := []struct {
+		Literal   string
+		TokenType token.TokenType
+	}{
+		{"let", token.LET},
+		{"fn", token.FUNC},
+		{"", token.EOF},
+	}
+
+	l := NewLexer(input)
+	for _, r := range expect {
+		tok := l.NextToken()
+		if r.TokenType != tok.TokenType {
+			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		}
+
+		if r.Literal != tok.Literal {
+			t.Fatalf("Expected literal %v but got %v", r.Literal, tok.Literal)
+		}
+	}
+}
+
+func TestLexerReturnsFunctionWithTokenInMiddle(t *testing.T) {
+	const input = "let=fn"
+	expect := []struct {
+		Literal   string
+		TokenType token.TokenType
+	}{
+		{"let", token.LET},
+		{"=", token.ASSIGN},
+		{"fn", token.FUNC},
+		{"", token.EOF},
+	}
+
+	l := NewLexer(input)
+	for _, r := range expect {
+		tok := l.NextToken()
+		if r.TokenType != tok.TokenType {
+			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		}
+
+		if r.Literal != tok.Literal {
+			t.Fatalf("Expected literal %v but got %v", r.Literal, tok.Literal)
+		}
+	}
+}
+
+/*
 func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 	const input = "let add = fn(x, y){ x + y};"
 	tokens := []struct {
@@ -118,7 +168,7 @@ func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 		{"let", token.LET},
 		{"add", token.IDENT},
 		{"=", token.ASSIGN},
-		{"fn", token.FUNCTION},
+		{"fn", token.FUNC},
 		{"(", token.LPAREN},
 		{"x", token.IDENT},
 		{",", token.COMMA},
@@ -143,4 +193,4 @@ func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 			t.Errorf("Expected token %v but got %v", r.TokenType, tok.TokenType)
 		}
 	}
-}
+}*/
