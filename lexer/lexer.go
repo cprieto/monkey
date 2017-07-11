@@ -55,9 +55,13 @@ func (l *Lexer) NextToken() token.Token {
 			tok.TokenType = lookupIdent(tok.Literal)
 
 			return tok // I really don't like this
-		} else {
-			tok.TokenType = token.ILLEGAL
+		} else if isNumber(l.char) {
+			tok.Literal = l.getNumber()
+			tok.TokenType = token.NUMBER
+			return tok
 		}
+
+		tok.TokenType = token.ILLEGAL
 	}
 
 	l.readChar()
@@ -88,12 +92,24 @@ func (l *Lexer) getIdent() string {
 	return l.input[position:l.currentPos]
 }
 
+func (l *Lexer) getNumber() string {
+	position := l.currentPos
+	for isNumber(l.char) {
+		l.readChar()
+	}
+	return l.input[position:l.currentPos]
+}
+
 func isWhitespace(char byte) bool {
 	return char == ' ' || char == '\t' || char == '\n' || char == '\r'
 }
 
 func isLetter(char byte) bool {
 	return char >= 'a' && char <= 'z' || char >= 'A' && char <= 'Z' || char == '_'
+}
+
+func isNumber(char byte) bool {
+	return char >= '0' && char <= '9'
 }
 
 func lookupIdent(input string) token.TokenType {

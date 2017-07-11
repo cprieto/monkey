@@ -216,3 +216,27 @@ func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 		}
 	}
 }
+
+func TestLexerCanRecognizeNumbers(t *testing.T) {
+	const input = "let a = 123;"
+	tokens := []struct {
+		Literal   string
+		TokenType token.TokenType
+	}{
+		{"let", token.LET},
+		{"a", token.IDENT},
+		{"=", token.ASSIGN},
+		{"123", token.NUMBER},
+	}
+
+	l := NewLexer(input)
+	for _, r := range tokens {
+		tok := l.NextToken()
+		if r.Literal != tok.Literal {
+			t.Errorf("Expected literal %v but got %v", r.Literal, tok.Literal)
+		}
+		if r.TokenType != tok.TokenType {
+			t.Errorf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		}
+	}
+}

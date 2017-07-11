@@ -17,6 +17,7 @@ const (
 	IDENT     = "IDENT"
 	LET       = "LET"
 	FUNC      = "FUNCTION"
+	NUMBER    = "NUMBER"
 )
 
 type Token struct {
