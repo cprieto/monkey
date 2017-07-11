@@ -158,6 +158,29 @@ func TestLexerReturnsFunctionWithTokenInMiddle(t *testing.T) {
 	}
 }
 
+func TestLexerUppercaseKeywordsAreRecognized(t *testing.T) {
+	const input = "LET FN"
+	expected := []struct {
+		Literal   string
+		TokenType token.TokenType
+	}{
+		{"LET", token.LET},
+		{"FN", token.FUNC},
+	}
+
+	l := NewLexer(input)
+	for _, r := range expected {
+		tok := l.NextToken()
+		if r.TokenType != tok.TokenType {
+			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		}
+
+		if r.Literal != tok.Literal {
+			t.Fatalf("Expected literal %v but got %v", r.Literal, tok.Literal)
+		}
+	}
+}
+
 /*
 func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 	const input = "let add = fn(x, y){ x + y};"

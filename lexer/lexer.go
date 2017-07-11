@@ -1,6 +1,9 @@
 package lexer
 
-import "github.com/cprieto/monkey/token"
+import (
+	"github.com/cprieto/monkey/token"
+	"strings"
+)
 
 var keywords = map[string]token.TokenType{
 	"let": token.LET,
@@ -15,13 +18,14 @@ type Lexer struct {
 }
 
 func NewLexer(input string) *Lexer {
-	return &Lexer{input: input}
+	l := &Lexer{input: input}
+	l.readChar()
+	return l
 }
 
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
-	l.readChar()
 	l.skipWhitespace()
 
 	switch l.char {
@@ -49,11 +53,14 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.char) {
 			tok.Literal = l.getIdent()
 			tok.TokenType = lookupIdent(tok.Literal)
+
+			return tok // I really don't like this
 		} else {
 			tok.TokenType = token.ILLEGAL
 		}
 	}
 
+	l.readChar()
 	return tok
 }
 
@@ -90,7 +97,8 @@ func isLetter(char byte) bool {
 }
 
 func lookupIdent(input string) token.TokenType {
-	if val, ok := keywords[input]; ok {
+	key := strings.ToLower(input)
+	if val, ok := keywords[key]; ok {
 		return val
 	}
 	return token.IDENT
