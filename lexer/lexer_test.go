@@ -181,7 +181,6 @@ func TestLexerUppercaseKeywordsAreRecognized(t *testing.T) {
 	}
 }
 
-/*
 func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 	const input = "let add = fn(x, y){ x + y};"
 	tokens := []struct {
@@ -202,7 +201,7 @@ func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 		{"+", token.PLUS},
 		{"y", token.IDENT},
 		{"}", token.RBRACE},
-		{";", token.COMMA},
+		{";", token.SEMICOLON},
 		{"", token.EOF},
 	}
 
@@ -216,4 +215,4 @@ func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 			t.Errorf("Expected token %v but got %v", r.TokenType, tok.TokenType)
 		}
 	}
-}*/
+}
