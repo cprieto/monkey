@@ -16,7 +16,7 @@ func TestLexerCanRecognizeEOF(t *testing.T) {
 }
 
 func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
-	const input = ";(,}-{=)+"
+	const input = ";(,}-{=)+!<>*"
 	expect := []struct {
 		Literal   string
 		TokenType token.TokenType
@@ -25,11 +25,15 @@ func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
 		{"(", token.LPAREN},
 		{",", token.COMMA},
 		{"}", token.RBRACE},
-		{"-", token.LESS},
+		{"-", token.MINUS},
 		{"{", token.LBRACE},
 		{"=", token.ASSIGN},
 		{")", token.RPAREN},
 		{"+", token.PLUS},
+		{"!", token.BANG},
+		{"<", token.LT},
+		{">", token.GT},
+		{"*", token.ASTERISK},
 		{"", token.EOF},
 	}
 
@@ -68,7 +72,7 @@ func TestLexerIgnoresWhitespacesAndEnter(t *testing.T) {
 }
 
 func TestIllegalCharacters(t *testing.T) {
-	const input = "~!@"
+	const input = "~@"
 	l := NewLexer(input)
 
 	for i := 0; i < len(input); i++ {
@@ -110,13 +114,18 @@ func TestLexerRecognizeIdentifierToken(t *testing.T) {
 }
 
 func TestLexerReturnsFunctionAndIdent(t *testing.T) {
-	const input = "let fn"
+	const input = "let fn else if true false return"
 	expect := []struct {
 		Literal   string
 		TokenType token.TokenType
 	}{
 		{"let", token.LET},
 		{"fn", token.FUNC},
+		{"else", token.ELSE},
+		{"if", token.IF},
+		{"true", token.TRUE},
+		{"false", token.FALSE},
+		{"return", token.RETURN},
 		{"", token.EOF},
 	}
 

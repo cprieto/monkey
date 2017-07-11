@@ -6,8 +6,13 @@ import (
 )
 
 var keywords = map[string]token.TokenType{
-	"let": token.LET,
-	"fn":  token.FUNC,
+	"let":    token.LET,
+	"fn":     token.FUNC,
+	"return": token.RETURN,
+	"if":     token.IF,
+	"else":   token.ELSE,
+	"true":   token.TRUE,
+	"false":  token.FALSE,
 }
 
 type Lexer struct {
@@ -46,7 +51,17 @@ func (l *Lexer) NextToken() token.Token {
 	case '+':
 		tok = token.Token{string(l.char), token.PLUS}
 	case '-':
-		tok = token.Token{string(l.char), token.LESS}
+		tok = token.Token{string(l.char), token.MINUS}
+	case '/':
+		tok = token.Token{string(l.char), token.SLASH}
+	case '*':
+		tok = token.Token{string(l.char), token.ASTERISK}
+	case '!':
+		tok = token.Token{string(l.char), token.BANG}
+	case '>':
+		tok = token.Token{string(l.char), token.GT}
+	case '<':
+		tok = token.Token{string(l.char), token.LT}
 	case '=':
 		tok = token.Token{string(l.char), token.ASSIGN}
 	default:
