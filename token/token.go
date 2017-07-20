@@ -28,6 +28,8 @@ const (
 	ELSE      = "ELSE"
 	TRUE      = "TRUE"
 	FALSE     = "FALSE"
+	EQ        = "=="
+	NE        = "!="
 )
 
 type Token struct {

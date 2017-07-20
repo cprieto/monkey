@@ -249,3 +249,32 @@ func TestLexerCanRecognizeNumbers(t *testing.T) {
 		}
 	}
 }
+
+func TestCanRecognizeCompositeTokens(t *testing.T) {
+	const input = "a != 34; b == 50;"
+	tokens := []struct {
+		Literal   string
+		TokenType token.TokenType
+	}{
+		{"a", token.IDENT},
+		{"!=", token.NE},
+		{"34", token.NUMBER},
+		{";", token.SEMICOLON},
+		{"b", token.IDENT},
+		{"==", token.EQ},
+		{"50", token.NUMBER},
+		{";", token.SEMICOLON},
+		{"", token.EOF},
+	}
+
+	l := NewLexer(input)
+	for _, r := range tokens {
+		tok := l.NextToken()
+		if r.Literal != tok.Literal {
+			t.Errorf("Expected literal %v but got %v", r.Literal, tok.Literal)
+		}
+		if r.TokenType != tok.TokenType {
+			t.Errorf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		}
+	}
+}
