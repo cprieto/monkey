@@ -13,6 +13,8 @@ var keywords = map[string]token.TokenType{
 	"else":   token.ELSE,
 	"true":   token.TRUE,
 	"false":  token.FALSE,
+	"!=":     token.NE,
+	"==":     token.EQ,
 }
 
 type Lexer struct {
@@ -57,13 +59,25 @@ func (l *Lexer) NextToken() token.Token {
 	case '*':
 		tok = token.Token{string(l.char), token.ASTERISK}
 	case '!':
-		tok = token.Token{string(l.char), token.BANG}
+		if l.peekChar() == '=' {
+			char := l.char
+			l.readChar()
+			tok = token.Token{string(char) + string(l.char), token.NE}
+		} else {
+			tok = token.Token{string(l.char), token.BANG}
+		}
+	case '=':
+		if l.peekChar() == '=' {
+			char := l.char
+			l.readChar()
+			tok = token.Token{string(char) + string(l.char), token.EQ}
+		} else {
+			tok = token.Token{string(l.char), token.ASSIGN}
+		}
 	case '>':
 		tok = token.Token{string(l.char), token.GT}
 	case '<':
 		tok = token.Token{string(l.char), token.LT}
-	case '=':
-		tok = token.Token{string(l.char), token.ASSIGN}
 	default:
 		if isLetter(l.char) {
 			tok.Literal = l.getIdent()
@@ -113,6 +127,13 @@ func (l *Lexer) getNumber() string {
 		l.readChar()
 	}
 	return l.input[position:l.currentPos]
+}
+
+func (l *Lexer) peekChar() byte {
+	if l.currentPos >= len(l.input) {
+		return 0
+	}
+	return l.input[l.nextPos]
 }
 
 func isWhitespace(char byte) bool {
