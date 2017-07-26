@@ -10,8 +10,8 @@ func TestLexerCanRecognizeEOF(t *testing.T) {
 
 	l := NewLexer(input)
 	tok := l.NextToken()
-	if tok.TokenType != token.EOF {
-		t.Fatalf("Expected EOF but got %q", tok.TokenType)
+	if tok.Type != token.EOF {
+		t.Fatalf("Expected EOF but got %q", tok.Type)
 	}
 }
 
@@ -44,8 +44,8 @@ func TestLexerCanRecognizeSymbolTokens(t *testing.T) {
 			t.Fatalf("Expected literal %q but got %q", tt.Literal, tok.Literal)
 		}
 
-		if tok.TokenType != tt.TokenType {
-			t.Fatalf("Expected type %v but got %v", tt.TokenType, tok.TokenType)
+		if tok.Type != tt.TokenType {
+			t.Fatalf("Expected type %v but got %v", tt.TokenType, tok.Type)
 		}
 	}
 }
@@ -65,8 +65,8 @@ func TestLexerIgnoresWhitespacesAndEnter(t *testing.T) {
 	for _, e := range expect {
 		tok := l.NextToken()
 
-		if tok.TokenType != e {
-			t.Fatalf("Expected type %v but got %v", e, tok.TokenType)
+		if tok.Type != e {
+			t.Fatalf("Expected type %v but got %v", e, tok.Type)
 		}
 	}
 }
@@ -77,14 +77,14 @@ func TestIllegalCharacters(t *testing.T) {
 
 	for i := 0; i < len(input); i++ {
 		tok := l.NextToken()
-		if tok.TokenType != token.ILLEGAL {
-			t.Fatalf("Expected an ILLEGAL token, but got %v", tok.TokenType)
+		if tok.Type != token.ILLEGAL {
+			t.Fatalf("Expected an ILLEGAL token, but got %v", tok.Type)
 		}
 	}
 
 	tok := l.NextToken()
-	if tok.TokenType != token.EOF {
-		t.Fatalf("Expected EOF token but got %v", tok.TokenType)
+	if tok.Type != token.EOF {
+		t.Fatalf("Expected EOF token but got %v", tok.Type)
 	}
 }
 
@@ -103,8 +103,8 @@ func TestLexerRecognizeIdentifierToken(t *testing.T) {
 	l := NewLexer(input)
 	for _, r := range expect {
 		tok := l.NextToken()
-		if r.TokenType != tok.TokenType {
-			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		if r.TokenType != tok.Type {
+			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.Type)
 		}
 
 		if r.Literal != tok.Literal {
@@ -132,8 +132,8 @@ func TestLexerReturnsFunctionAndIdent(t *testing.T) {
 	l := NewLexer(input)
 	for _, r := range expect {
 		tok := l.NextToken()
-		if r.TokenType != tok.TokenType {
-			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		if r.TokenType != tok.Type {
+			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.Type)
 		}
 
 		if r.Literal != tok.Literal {
@@ -157,8 +157,8 @@ func TestLexerReturnsFunctionWithTokenInMiddle(t *testing.T) {
 	l := NewLexer(input)
 	for _, r := range expect {
 		tok := l.NextToken()
-		if r.TokenType != tok.TokenType {
-			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		if r.TokenType != tok.Type {
+			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.Type)
 		}
 
 		if r.Literal != tok.Literal {
@@ -180,8 +180,8 @@ func TestLexerUppercaseKeywordsAreRecognized(t *testing.T) {
 	l := NewLexer(input)
 	for _, r := range expected {
 		tok := l.NextToken()
-		if r.TokenType != tok.TokenType {
-			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		if r.TokenType != tok.Type {
+			t.Fatalf("Expected token %v but got %v", r.TokenType, tok.Type)
 		}
 
 		if r.Literal != tok.Literal {
@@ -220,8 +220,8 @@ func TestLexerRecognizeFunctionAndLetAssignation(t *testing.T) {
 		if r.Literal != tok.Literal {
 			t.Errorf("Expected literal %v but got %v", r.Literal, tok.Literal)
 		}
-		if r.TokenType != tok.TokenType {
-			t.Errorf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		if r.TokenType != tok.Type {
+			t.Errorf("Expected token %v but got %v", r.TokenType, tok.Type)
 		}
 	}
 }
@@ -244,8 +244,8 @@ func TestLexerCanRecognizeNumbers(t *testing.T) {
 		if r.Literal != tok.Literal {
 			t.Errorf("Expected literal %v but got %v", r.Literal, tok.Literal)
 		}
-		if r.TokenType != tok.TokenType {
-			t.Errorf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		if r.TokenType != tok.Type {
+			t.Errorf("Expected token %v but got %v", r.TokenType, tok.Type)
 		}
 	}
 }
@@ -273,8 +273,8 @@ func TestCanRecognizeCompositeTokens(t *testing.T) {
 		if r.Literal != tok.Literal {
 			t.Errorf("Expected literal %v but got %v", r.Literal, tok.Literal)
 		}
-		if r.TokenType != tok.TokenType {
-			t.Errorf("Expected token %v but got %v", r.TokenType, tok.TokenType)
+		if r.TokenType != tok.Type {
+			t.Errorf("Expected token %v but got %v", r.TokenType, tok.Type)
 		}
 	}
 }

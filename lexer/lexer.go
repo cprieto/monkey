@@ -37,7 +37,7 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.char {
 	case 0:
-		tok = token.Token{TokenType: token.EOF}
+		tok = token.Token{Type: token.EOF}
 	case ';':
 		tok = token.Token{string(l.char), token.SEMICOLON}
 	case ',':
@@ -81,16 +81,16 @@ func (l *Lexer) NextToken() token.Token {
 	default:
 		if isLetter(l.char) {
 			tok.Literal = l.getIdent()
-			tok.TokenType = lookupIdent(tok.Literal)
+			tok.Type = lookupIdent(tok.Literal)
 
 			return tok // I really don't like this
 		} else if isNumber(l.char) {
 			tok.Literal = l.getNumber()
-			tok.TokenType = token.NUMBER
+			tok.Type = token.NUMBER
 			return tok
 		}
 
-		tok.TokenType = token.ILLEGAL
+		tok.Type = token.ILLEGAL
 	}
 
 	l.readChar()
