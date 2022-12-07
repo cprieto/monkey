@@ -62,7 +62,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LT, l.char)
 	case '>':
 		tok = newToken(token.GT, l.char)
-	case '0':
+	case 0:
 		tok = token.Token{Type: token.EOF, Literal: ""}
 	default:
 		if isLetter(l.char) {
