@@ -57,3 +57,27 @@ func TestPeekErrors(t *testing.T) {
 	}
 
 }
+
+func TestReturnStatement(t *testing.T) {
+	input := `return 5;`
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	if program == nil {
+		t.Fatal("Expected a program and got nothing")
+	}
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("Expected 1 statement, got %d", len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ReturnStatement)
+	if !ok {
+		t.Fatal("Statement is not a return statement")
+	}
+
+	if stmt.TokenLiteral() != "return" {
+		t.Fatalf("Expected a token literal `return` but got `%s`", stmt.TokenLiteral())
+	}
+}

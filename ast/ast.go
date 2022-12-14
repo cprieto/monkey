@@ -27,10 +27,20 @@ func (p *Program) TokenLiteral() string {
 
 type LetStatement struct {
 	Token token.Token
+	// TODO: use identifier
 	Name  string
 	Value Expression
 }
 
 func (l *LetStatement) TokenLiteral() string {
+	return l.Token.Literal
+}
+
+type ReturnStatement struct {
+	Token token.Token
+	Value Expression
+}
+
+func (l *ReturnStatement) TokenLiteral() string {
 	return l.Token.Literal
 }
