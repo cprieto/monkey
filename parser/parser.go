@@ -5,6 +5,23 @@ import (
 	"cprieto.com/monkey/lexer"
 	"cprieto.com/monkey/token"
 	"fmt"
+	"strconv"
+)
+
+const (
+	_ int = iota
+	LOWEST
+	EQUALS
+	LESSGREATER
+	SUM
+	PRODUCT
+	PREFIX
+	CALL
+)
+
+type (
+	prefixParseFn func() ast.Expression
+	infixParseFn  func(ast.Expression) ast.Expression
 )
 
 type Parser struct {
@@ -12,18 +29,25 @@ type Parser struct {
 	current token.Token
 	peek    token.Token
 	errors  []string
-}
 
-func (p *Parser) Errors() []string {
-	return p.errors
+	prefixFn map[token.TokenType]prefixParseFn
+	infixFn  map[token.TokenType]infixParseFn
 }
 
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{lxr: l, errors: []string{}}
+	p.prefixFn = make(map[token.TokenType]prefixParseFn)
 	p.nextToken()
 	p.nextToken()
 
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
+	p.registerPrefix(token.INT, p.parseIntegerLiteral)
+
 	return p
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
 }
 
 func (p *Parser) nextToken() {
@@ -52,7 +76,7 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.RETURN:
 		return p.parseReturnStatement()
 	default:
-		return nil
+		return p.parseExpressionStatement()
 	}
 }
 
@@ -62,7 +86,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 
-	stmt.Name = p.current.Literal
+	stmt.Name = &ast.Identifier{Token: p.current, Value: p.current.Literal}
 	if !p.expectPeek(token.ASSIGN) {
 		return nil
 	}
@@ -106,4 +130,51 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 		p.nextToken()
 	}
 	return stmt
+}
+
+func (p *Parser) registerPrefix(t token.TokenType, fn prefixParseFn) {
+	p.prefixFn[t] = fn
+}
+
+func (p *Parser) registerInfix(t token.TokenType, fn infixParseFn) {
+	p.infixFn[t] = fn
+}
+
+func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	stmt := &ast.ExpressionStatement{Token: p.current}
+
+	stmt.Expression = p.parseExpression(LOWEST)
+
+	if p.peekTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return stmt
+}
+
+func (p *Parser) parseExpression(lowest int) ast.Expression {
+	prefix := p.prefixFn[p.current.Type]
+	if prefix == nil {
+		return nil
+	}
+	leftExpr := prefix()
+	return leftExpr
+}
+
+// / ** Prefix functions
+func (p *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{Token: p.current, Value: p.current.Literal}
+}
+
+func (p *Parser) parseIntegerLiteral() ast.Expression {
+	literal := &ast.IntegerLiteral{Token: p.current}
+	value, err := strconv.ParseInt(p.current.Literal, 0, 64)
+	if err != nil {
+		msg := fmt.Sprintf("Couldn't parse %q as integer", p.current.Literal)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+
+	literal.Value = value
+	return literal
 }

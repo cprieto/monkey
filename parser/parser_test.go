@@ -40,7 +40,7 @@ let foobar = 34;
 			t.Fatalf("Expected a let statement but it is not")
 		}
 
-		if letStmt.Name != tt.literal {
+		if letStmt.Name.Value != tt.literal {
 			t.Fatalf("Expected literal with name `%s` but got `%s`", tt.literal, letStmt.Name)
 		}
 	}
@@ -79,5 +79,63 @@ func TestReturnStatement(t *testing.T) {
 
 	if stmt.TokenLiteral() != "return" {
 		t.Fatalf("Expected a token literal `return` but got `%s`", stmt.TokenLiteral())
+	}
+}
+
+func TestIdentifierExpression(t *testing.T) {
+	input := `foobar`
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	if len(program.Statements) == 0 {
+		t.Fatalf("Expected some statement value, but got nothing")
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("Expected an expression statement and got something else: `%T`", program.Statements[0])
+	}
+
+	id, ok := stmt.Expression.(*ast.Identifier)
+	if !ok {
+		t.Fatalf("Expecting an identifier as expression but got `%T`", stmt.Expression)
+	}
+
+	if id.Value != "foobar" {
+		t.Fatalf("Identifier value is not `foobar` but `%s`", id.Value)
+	}
+
+	if id.TokenLiteral() != "foobar" {
+		t.Fatalf("Identifier token is not `foobar` but `%s`", id.TokenLiteral())
+	}
+}
+
+func TestIntegerExpression(t *testing.T) {
+	input := `10`
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	if len(program.Statements) == 0 {
+		t.Fatalf("Expected some statement value, but got nothing")
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("Expected an expression statement and got something else: `%T`", program.Statements[0])
+	}
+
+	id, ok := stmt.Expression.(*ast.IntegerLiteral)
+	if !ok {
+		t.Fatalf("Expecting an identifier as expression but got `%T`", stmt.Expression)
+	}
+
+	if id.Value != 10 {
+		t.Fatalf("Identifier value is not `foobar` but `%d`", id.Value)
+	}
+
+	if id.TokenLiteral() != "10" {
+		t.Fatalf("Identifier token is not `foobar` but `%s`", id.TokenLiteral())
 	}
 }
