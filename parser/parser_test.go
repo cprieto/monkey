@@ -3,6 +3,7 @@ package parser
 import (
 	"cprieto.com/monkey/ast"
 	"cprieto.com/monkey/lexer"
+	"fmt"
 	"testing"
 )
 
@@ -137,5 +138,57 @@ func TestIntegerExpression(t *testing.T) {
 
 	if id.TokenLiteral() != "10" {
 		t.Fatalf("Identifier token is not `foobar` but `%s`", id.TokenLiteral())
+	}
+}
+
+func TestParsingPrefixExpression(t *testing.T) {
+	test := []struct {
+		input    string
+		operator string
+		value    int64
+	}{
+		{"!5", "!", 5},
+		{"-15", "-", 15},
+	}
+
+	for _, tt := range test {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+
+		if len(p.Errors()) != 0 {
+			t.Fatalf("Parsing error not expected: %s", p.Errors()[0])
+		}
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("Expected 1 statement, but got %d", len(program.Statements))
+		}
+
+		stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("Expected an expression statement but got `%T`", program.Statements[0])
+		}
+
+		exp, ok := stmt.Expression.(*ast.PrefixExpression)
+		if !ok {
+			t.Fatalf("stmt is not ast.PrefixExpression, got=%T", stmt.Expression)
+		}
+
+		if exp.Operator != tt.operator {
+			t.Fatalf("exp.Operator is not `%s` but got=%s", tt.operator, exp.Operator)
+		}
+
+		value, ok := exp.Right.(*ast.IntegerLiteral)
+		if !ok {
+			t.Fatalf("I was expecting an integer literal but got %T", exp.Right)
+		}
+
+		if value.Value != tt.value {
+			t.Fatalf("I was expecting value %d but got %d", tt.value, value.Value)
+		}
+
+		if value.TokenLiteral() != fmt.Sprintf("%d", tt.value) {
+			t.Fatalf("I was expecting literal '%d' but got '%s'", tt.value, value.TokenLiteral())
+		}
 	}
 }

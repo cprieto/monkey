@@ -9,6 +9,7 @@ const (
 	INT     = "INT"
 
 	ASSIGN   = "="
+	MINUS    = "-"
 	PLUS     = "+"
 	BANG     = "!"
 	ASTERISK = "*"
